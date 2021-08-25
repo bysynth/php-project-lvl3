@@ -7,14 +7,8 @@ setup:
 	php artisan key:gen --ansi
 	npm install
 
-watch:
-	npm run watch
-
 migrate:
 	php artisan migrate
-
-console:
-	php artisan tinker
 
 log:
 	tail -f storage/logs/laravel.log
