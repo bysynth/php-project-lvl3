@@ -51,13 +51,17 @@ class UrlController extends Controller
 
     public function index(): View
     {
-        $urls = DB::table('urls')->paginate(2); // TODO: скорректировать количество элементов
+        $urls = DB::table('urls')->paginate(3); // TODO: скорректировать количество элементов
         return view('urls.index', ['urls' => $urls]);
     }
 
     public function show(int $id): View
     {
         $url = DB::table('urls')->find($id);
+        if (is_null($url)) {
+            abort(404);
+        }
+
         return view('urls.show', ['url' => $url]);
     }
 
