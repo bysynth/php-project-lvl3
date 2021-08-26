@@ -62,7 +62,12 @@ class UrlController extends Controller
             abort(404);
         }
 
-        return view('urls.show', ['url' => $url]);
+        $checks = DB::table('url_checks')
+            ->where('url_id', '=', $url->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('urls.show', ['url' => $url, 'checks' => $checks]);
     }
 
     private function normalizeUrl(string $url): string
