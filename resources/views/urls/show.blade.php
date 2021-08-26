@@ -24,14 +24,12 @@
             </table>
         </div>
         <h2 class="mt-5 mb-3">Проверки</h2>
-        {{-- TODO: добавить проверку урл  --}}
-        <form action="/" method="post">
+        <form action="{{ route('checks.store', ['id' => $url->id]) }}" method="post">
             @csrf
             <input type="submit" class="btn btn-primary mb-3" value="Запустить проверку">
         </form>
         <div class="table-responsive">
             <table class="table table-bordered table-hover text-nowrap">
-                {{--  TODO: генерация инфо о проверках  --}}
                 <tr>
                     <th>ID</th>
                     <th>Код ответа</th>
@@ -40,22 +38,16 @@
                     <th>description</th>
                     <th>Дата создания</th>
                 </tr>
+                @foreach($checks as $check)
                 <tr>
-                    <td>600</td>
-                    <td>200</td>
-                    <td>All-in-one...</td>
-                    <td></td>
-                    <td>A new tool that blends your ev...</td>
-                    <td>2021-08-13 13:58:34</td>
+                    <td>{{ $check->id }}</td>
+                    <td> -- </td>
+                    <td> -- </td>
+                    <td> -- </td>
+                    <td> -- </td>
+                    <td>{{ $check->created_at}}</td>
                 </tr>
-                <tr>
-                    <td>595</td>
-                    <td>200</td>
-                    <td>All-in-one...</td>
-                    <td></td>
-                    <td>A new tool that blends your ev...</td>
-                    <td>2021-08-11 17:49:45</td>
-                </tr>
+                @endforeach
             </table>
         </div>
     </div>

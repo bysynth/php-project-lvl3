@@ -12,13 +12,13 @@
                     <th>Код ответа</th>
                 </tr>
                 @foreach($urls as $url)
-                    <tr>
-                        <td>{{ $url->id }}</td>
-                        <td><a href="{{ route('urls.show', ['id' => $url->id]) }}">{{ $url->name }}</a></td>
-                        <td>{{ $url->updated_at }}</td>
-                        {{-- TODO: Добавить код ответа --}}
-                        <td> -- </td>
-                    </tr>
+                <tr>
+                    <td>{{ $url->id }}</td>
+                    <td><a href="{{ route('urls.show', ['id' => $url->id]) }}">{{ $url->name }}</a></td>
+                    <td>{{ $url->updated_at }}</td>
+                    {{-- TODO: Добавить код ответа --}}
+                    <td> -- </td>
+                </tr>
                 @endforeach
             </table>
             {{ $urls->links() }}
