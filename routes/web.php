@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CheckController;
 use App\Http\Controllers\UrlController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,3 +19,4 @@ Route::get('/', [UrlController::class, 'create'])->name('urls.create');
 Route::post('/urls', [UrlController::class, 'store'])->name('urls.store');
 Route::get('/urls', [UrlController::class, 'index'])->name('urls.index');
 Route::get('/urls/{id}', [UrlController::class, 'show'])->name('urls.show');
+Route::post('/urls/{id}/checks', [CheckController::class, 'store'])->name('checks.store');
