@@ -51,7 +51,14 @@ class UrlController extends Controller
 
     public function index(): View
     {
-        $urls = DB::table('urls')->paginate(3); // TODO: скорректировать количество элементов
+        $urls = DB::table('urls')
+            ->distinct('urls.id')
+            ->select('urls.id', 'urls.name', 'url_checks.status_code', 'url_checks.created_at AS last_checked_at')
+            ->leftJoin('url_checks', 'urls.id', '=', 'url_checks.url_id')
+            ->orderBy('urls.id')
+            ->orderByDesc('url_checks.created_at')
+            ->paginate(5);
+
         return view('urls.index', ['urls' => $urls]);
     }
 
@@ -75,8 +82,9 @@ class UrlController extends Controller
         $urlData = parse_url($url);
         $scheme = $urlData['scheme'];
         $host = $urlData['host'];
+        $path = $urlData['path'] ?? '';
 
-        return "$scheme://$host";
+        return "$scheme://{$host}{$path}";
     }
 
     private function isUrlExists(string $name): bool
