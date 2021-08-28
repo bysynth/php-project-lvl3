@@ -10,11 +10,18 @@ use Illuminate\View\View;
 
 class UrlController extends Controller
 {
+    /**
+     * @return View
+     */
     public function create(): View
     {
         return view('urls.create');
     }
 
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     */
     public function store(Request $request): RedirectResponse
     {
         $input = $request->input('url.name');
@@ -49,6 +56,9 @@ class UrlController extends Controller
         return redirect()->route('urls.show', ['id' => $id]);
     }
 
+    /**
+     * @return View
+     */
     public function index(): View
     {
         $urls = DB::table('urls')
@@ -62,6 +72,10 @@ class UrlController extends Controller
         return view('urls.index', ['urls' => $urls]);
     }
 
+    /**
+     * @param int $id
+     * @return View
+     */
     public function show(int $id): View
     {
         $url = DB::table('urls')->find($id);
@@ -77,6 +91,10 @@ class UrlController extends Controller
         return view('urls.show', ['url' => $url, 'checks' => $checks]);
     }
 
+    /**
+     * @param string $url
+     * @return string
+     */
     private function normalizeUrl(string $url): string
     {
         $urlData = parse_url($url);
@@ -87,6 +105,10 @@ class UrlController extends Controller
         return "$scheme://{$host}{$path}";
     }
 
+    /**
+     * @param string $name
+     * @return bool
+     */
     private function isUrlExists(string $name): bool
     {
         return DB::table('urls')->where('name', '=', $name)->exists();
