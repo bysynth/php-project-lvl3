@@ -39,6 +39,14 @@ class UrlControllerTest extends TestCase
         $this->assertDatabaseCount('urls', 2);
     }
 
+    public function testStoreWithEmptyInput(): void
+    {
+        $emptyInput = '';
+        $response = $this->post(route('urls.store'), ['url'=> ['name' => $emptyInput]]);
+        $response->assertSessionHasErrors();
+        $response->assertRedirect();
+    }
+
     public function testStoreWithInvalidUrl(): void
     {
         $url = 'invalid.url';
