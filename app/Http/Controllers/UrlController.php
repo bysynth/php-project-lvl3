@@ -25,13 +25,14 @@ class UrlController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $input = $request->input('url.name');
-        $validator = Validator::make($request->input(), [
-            'url.name' => ['required', 'url', 'max:255'],
+
+        $validator = Validator::make($request->input('url'), [
+            'name' => ['required', 'url', 'max:255'],
         ]);
 
         if ($validator->fails()) {
             flash("Некорректный URL: $input")->error();
-            return back()->withInput()->withErrors($validator);
+            return back()->withInput()->withErrors($validator)->with('name');
         }
 
         $url = $this->normalizeUrl($input);

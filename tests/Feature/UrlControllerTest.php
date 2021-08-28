@@ -33,7 +33,7 @@ class UrlControllerTest extends TestCase
     public function testStore(): void
     {
         $url = 'https://www.yandex.ru';
-        $response = $this->post(route('urls.store'), ['url'=> ['name' => $url]]);
+        $response = $this->post(route('urls.store'), ['url' => ['name' => $url]]);
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
         $this->assertDatabaseCount('urls', 2);
@@ -42,16 +42,16 @@ class UrlControllerTest extends TestCase
     public function testStoreWithEmptyInput(): void
     {
         $emptyInput = '';
-        $response = $this->post(route('urls.store'), ['url'=> ['name' => $emptyInput]]);
-        $response->assertSessionHasErrors();
+        $response = $this->post(route('urls.store'), ['url' => ['name' => $emptyInput]]);
+        $response->assertSessionHasErrors('name');
         $response->assertRedirect();
     }
 
     public function testStoreWithInvalidUrl(): void
     {
         $url = 'invalid.url';
-        $response = $this->post(route('urls.store'), ['url'=> ['name' => $url]]);
-        $response->assertSessionHasErrors('url.name');
+        $response = $this->post(route('urls.store'), ['url' => ['name' => $url]]);
+        $response->assertSessionHasErrors('name');
         $response->assertSessionHasInput('url.name');
         $response->assertRedirect();
     }
@@ -59,7 +59,7 @@ class UrlControllerTest extends TestCase
     public function testStoreWithNotUniqUrl(): void
     {
         $url = 'https://www.google.com';
-        $response = $this->post(route('urls.store'), ['url'=> ['name' => $url]]);
+        $response = $this->post(route('urls.store'), ['url' => ['name' => $url]]);
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
         $this->assertDatabaseCount('urls', 1);

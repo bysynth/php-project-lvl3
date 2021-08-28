@@ -12,7 +12,7 @@
                     <input type="text" name="url[name]"
                            class="@error('url.name') is-invalid @enderror form-control form-control-lg"
                            value="{{ old('url.name') }}"
-                           placeholder="https://www.example.com" required>
+                           placeholder="https://www.example.com">
                     <button type="submit" class="btn btn-lg btn-primary ml-3 px-5 text-uppercase">Проверить</button>
                 </form>
             </div>
