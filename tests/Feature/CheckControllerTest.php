@@ -27,7 +27,13 @@ class CheckControllerTest extends TestCase
 
     public function testStore(): void
     {
-        Http::fake(fn($request) => Http::response(null, 404));
+        $body = <<<BODY
+            <h1>Test</h1>
+            <meta name="keywords" content="test, phpunit">
+            <meta name="description" content="hello from test"
+        BODY;
+
+        Http::fake(fn($request) => Http::response($body, 404));
 
         $response = $this->post(route('checks.store', ['id' => $this->id]));
         $response->assertSessionHasNoErrors();

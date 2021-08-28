@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use DiDom\Document;
+use DiDom\Exceptions\InvalidSelectorException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class CheckController extends Controller
 {
+    /**
+     * @param int $id
+     * @return RedirectResponse
+     * @throws InvalidSelectorException
+     */
     public function store(int $id): RedirectResponse
     {
         $url = DB::table('urls')->find($id);
@@ -25,10 +32,18 @@ class CheckController extends Controller
 
         $statusCode = $response->status();
 
+        $dom = new Document($response->body());
+        $h1 = optional($dom->first('h1'))->text();
+        $keywords = optional($dom->first('meta[name=keywords]'))->getAttribute('content');
+        $description = optional($dom->first('meta[name=description]'))->getAttribute('content');
+
         $now = now();
         $checkData = [
             'url_id' => $id,
             'status_code' => $statusCode,
+            'h1' => $h1,
+            'keywords' => $keywords,
+            'description' => $description,
             'created_at' => $now,
             'updated_at' => $now
         ];
