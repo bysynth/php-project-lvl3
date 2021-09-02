@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use DiDom\Document;
+use DiDom\Exceptions\InvalidSelectorException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
 class UrlController extends Controller
 {
-    /**
-     * @return View
-     */
-    public function create(): View
-    {
-        return view('urls.create');
-    }
-
     /**
      * @param Request $request
      * @return RedirectResponse
@@ -32,7 +27,7 @@ class UrlController extends Controller
 
         if ($validator->fails()) {
             flash("Некорректный URL: $input")->error();
-            return back()->withInput()->withErrors($validator)->with('name');
+            return back()->withInput()->withErrors($validator);
         }
 
         $url = $this->normalizeUrl($input);
@@ -79,7 +74,8 @@ class UrlController extends Controller
      */
     public function show(int $id): View
     {
-        $url = DB::table('urls')->find($id);
+        $url = $this->getUrlData($id);
+
         if (is_null($url)) {
             abort(404);
         }
@@ -90,6 +86,52 @@ class UrlController extends Controller
             ->get();
 
         return view('urls.show', ['url' => $url, 'checks' => $checks]);
+    }
+
+    /**
+     * @param int $id
+     * @return RedirectResponse
+     * @throws InvalidSelectorException
+     */
+    public function checkStore(int $id): RedirectResponse
+    {
+        $url = $this->getUrlData($id);
+
+        if (is_null($url)) {
+            abort(404);
+        }
+
+        try {
+            $response = HTTP::get($url->name);
+        } catch (\Exception $e) {
+            flash($e->getMessage())->error();
+            return back();
+        }
+
+        $statusCode = $response->status();
+
+        $dom = new Document($response->body());
+        $h1 = optional($dom->first('h1'))->text();
+        $keywords = optional($dom->first('meta[name=keywords]'))->getAttribute('content');
+        $description = optional($dom->first('meta[name=description]'))->getAttribute('content');
+
+        $now = now();
+        $checkData = [
+            'url_id' => $id,
+            'status_code' => $statusCode,
+            'h1' => $h1,
+            'keywords' => $keywords,
+            'description' => $description,
+            'created_at' => $now,
+            'updated_at' => $now
+        ];
+
+        DB::table('url_checks')->insert($checkData);
+        DB::table('urls')->where('id', '=', $id)->update(['updated_at' => $now]);
+
+        flash('Страница успешно проверена')->success();
+
+        return back();
     }
 
     /**
@@ -113,5 +155,14 @@ class UrlController extends Controller
     private function isUrlExists(string $name): bool
     {
         return DB::table('urls')->where('name', '=', $name)->exists();
+    }
+
+    /**
+     * @param int $id
+     * @return object|null
+     */
+    private function getUrlData(int $id): ?object
+    {
+        return DB::table('urls')->find($id);
     }
 }
