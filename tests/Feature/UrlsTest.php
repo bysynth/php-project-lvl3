@@ -55,7 +55,11 @@ class UrlsTest extends TestCase
 
     public function testCheckStore(): void
     {
-        $body = file_get_contents(realpath(__DIR__ . '/../fixtures/test.html'));
+        $body = file_get_contents(__DIR__ . '/../fixtures/test.html');
+
+        if ($body === false) {
+            throw new \Exception('Ошибка обработки файла фикстуры');
+        }
 
         Http::fake(fn($request) => Http::response($body, 200));
 
