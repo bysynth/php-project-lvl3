@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class UrlsTest extends TestCase
@@ -23,12 +22,6 @@ class UrlsTest extends TestCase
             'updated_at' => $now
         ];
         $this->id = DB::table('urls')->insertGetId($urlData);
-    }
-
-    public function testIndex(): void
-    {
-        $response = $this->get(route('index'));
-        $response->assertOk();
     }
 
     public function testUrlStore(): void
@@ -51,29 +44,6 @@ class UrlsTest extends TestCase
         $response->assertSessionHasNoErrors();
         $response->assertRedirect(route('urls.show', ['id' => $this->id]));
         $this->assertDatabaseHas('urls', $urlData);
-    }
-
-    public function testCheckStore(): void
-    {
-        $body = file_get_contents(__DIR__ . '/../fixtures/test.html');
-
-        if ($body === false) {
-            throw new \Exception('Ошибка обработки файла фикстуры');
-        }
-
-        Http::fake(fn($request) => Http::response($body, 200));
-
-        $response = $this->post(route('urls.checks.store', ['id' => $this->id]));
-        $response->assertSessionHasNoErrors();
-        $response->assertRedirect();
-        $this->assertDatabaseHas('url_checks', ['url_id' => $this->id, 'status_code' => 200]);
-    }
-
-    public function testCheckStoreWithInvalidId(): void
-    {
-        $invalidId = 999;
-        $response = $this->post(route('urls.checks.store', ['id' => $invalidId]));
-        $response->assertNotFound();
     }
 
     public function testUrlsIndex(): void
