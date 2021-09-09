@@ -30,9 +30,13 @@ class UrlController extends Controller
             return back()->withInput()->withErrors($validator);
         }
 
-        $url = $this->normalizeUrl($input);
+        $urlData = parse_url($input);
+        $scheme = $urlData['scheme'];
+        $host = $urlData['host'];
+        $path = $urlData['path'] ?? '';
+        $url = "$scheme://{$host}{$path}";
 
-        if ($this->isUrlExists($url)) {
+        if (DB::table('urls')->where('name', '=', $url)->exists()) {
             flash('Страница уже существует')->info();
             $id = DB::table('urls')->where('name', '=', $url)->value('id');
 
@@ -74,7 +78,7 @@ class UrlController extends Controller
      */
     public function show(int $id): View
     {
-        $url = $this->getUrlData($id);
+        $url = DB::table('urls')->find($id);
 
         if (is_null($url)) {
             abort(404);
@@ -95,7 +99,7 @@ class UrlController extends Controller
      */
     public function checkStore(int $id): RedirectResponse
     {
-        $url = $this->getUrlData($id);
+        $url = DB::table('urls')->find($id);
 
         if (is_null($url)) {
             abort(404);
@@ -132,37 +136,5 @@ class UrlController extends Controller
         flash('Страница успешно проверена')->success();
 
         return back();
-    }
-
-    /**
-     * @param string $url
-     * @return string
-     */
-    private function normalizeUrl(string $url): string
-    {
-        $urlData = parse_url($url);
-        $scheme = $urlData['scheme'];
-        $host = $urlData['host'];
-        $path = $urlData['path'] ?? '';
-
-        return "$scheme://{$host}{$path}";
-    }
-
-    /**
-     * @param string $name
-     * @return bool
-     */
-    private function isUrlExists(string $name): bool
-    {
-        return DB::table('urls')->where('name', '=', $name)->exists();
-    }
-
-    /**
-     * @param int $id
-     * @return object|null
-     */
-    private function getUrlData(int $id): ?object
-    {
-        return DB::table('urls')->find($id);
     }
 }
