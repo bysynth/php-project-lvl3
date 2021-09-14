@@ -5,7 +5,7 @@ setup:
 	composer install
 	cp -n .env.example .env|| true
 	php artisan key:gen --ansi
-	npm install
+	npm ci
 
 migrate:
 	php artisan migrate
