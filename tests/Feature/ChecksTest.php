@@ -2,15 +2,12 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class ChecksTest extends TestCase
 {
-    use RefreshDatabase;
-
     private int $id;
 
     public function setUp(): void
