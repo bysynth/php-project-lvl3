@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UrlController;
+use App\Http\Controllers\CheckController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::view('/', 'index')->name('index');
-Route::post('/urls', [UrlController::class, 'store'])->name('urls.store');
-Route::get('/urls', [UrlController::class, 'index'])->name('urls.index');
-Route::get('/urls/{id}', [UrlController::class, 'show'])->name('urls.show');
-Route::post('/urls/{id}/checks', [UrlController::class, 'checkStore'])->name('urls.checks.store');
+Route::resource('urls', UrlController::class)
+    ->only(['store', 'index', 'show'])
+    ->parameters(['urls' => 'id']);
+Route::post('/urls/{id}/checks', [CheckController::class, 'store'])->name('checks.store');
