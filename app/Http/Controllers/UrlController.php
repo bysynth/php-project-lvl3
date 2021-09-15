@@ -61,15 +61,16 @@ class UrlController extends Controller
      */
     public function index(): View
     {
-        $urls = DB::table('urls')
-            ->distinct('urls.id')
-            ->select('urls.id', 'urls.name', 'url_checks.status_code', 'url_checks.created_at AS last_checked_at')
-            ->leftJoin('url_checks', 'urls.id', '=', 'url_checks.url_id')
-            ->orderBy('urls.id')
-            ->orderByDesc('url_checks.created_at')
-            ->paginate(5);
+        $urls = DB::table('urls')->orderBy('id')->paginate(5);
+        $lastChecks = DB::table('url_checks')
+            ->distinct('url_id')
+            ->select('url_id', 'status_code')
+            ->orderBy('url_id')
+            ->orderByDesc('created_at')
+            ->get()
+            ->keyBy('url_id');
 
-        return view('urls.index', ['urls' => $urls]);
+        return view('urls.index', ['urls' => $urls, 'lastChecks' => $lastChecks]);
     }
 
     /**
