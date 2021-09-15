@@ -24,24 +24,32 @@ class ChecksTest extends TestCase
 
     public function testCheckStore(): void
     {
-        $body = file_get_contents(__DIR__ . '/../fixtures/test.html');
+        $body = <<<BODY
+            <h1>Test</h1>
+            <meta name="keywords" content="test, phpunit">
+            <meta name="description" content="hello from test"
+        BODY;
 
-        if ($body === false) {
-            throw new \Exception('Ошибка обработки файла фикстуры');
-        }
+        $checkData = [
+            'url_id' => $this->id,
+            'status_code' => '200',
+            'h1' => 'Test',
+            'keywords' => 'test, phpunit',
+            'description' => 'hello from test'
+        ];
 
         Http::fake(fn($request) => Http::response($body, 200));
 
-        $response = $this->post(route('urls.checks.store', ['id' => $this->id]));
+        $response = $this->post(route('checks.store', ['id' => $this->id]));
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
-        $this->assertDatabaseHas('url_checks', ['url_id' => $this->id, 'status_code' => 200]);
+        $this->assertDatabaseHas('url_checks', $checkData);
     }
 
     public function testCheckStoreWithInvalidId(): void
     {
         $invalidId = 999;
-        $response = $this->post(route('urls.checks.store', ['id' => $invalidId]));
+        $response = $this->post(route('checks.store', ['id' => $invalidId]));
         $response->assertNotFound();
     }
 }
