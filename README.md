@@ -2,6 +2,8 @@
 
 [![Actions Status](https://github.com/bysynth/php-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/bysynth/php-project-lvl3/actions)
 [![Github Actions Status](https://github.com/bysynth/php-project-lvl3/workflows/CI/badge.svg)](https://github.com/bysynth/php-project-lvl3/actions)
+[![Maintainability](https://api.codeclimate.com/v1/badges/ff1ff832a0fccead55d4/maintainability)](https://codeclimate.com/github/bysynth/php-project-lvl3/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/ff1ff832a0fccead55d4/test_coverage)](https://codeclimate.com/github/bysynth/php-project-lvl3/test_coverage)
 
 https://vk-page-analyzer.herokuapp.com/
 
