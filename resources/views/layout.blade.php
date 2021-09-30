@@ -18,11 +18,11 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('index') ? 'active' : '' }}"
+                    <a class="nav-link {{ setActiveLink('index') }}"
                        href="{{ route('index') }}">Главная</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs(['urls.index', 'urls.show']) ? 'active' : '' }}"
+                    <a class="nav-link {{ setActiveLink('urls.*') }}"
                        href="{{ route('urls.index') }}">Сайты</a>
                 </li>
             </ul>
